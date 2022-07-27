@@ -1,61 +1,43 @@
+import axios from "axios";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
-const apiKey = '2fe8bcc1'
 
-
+//components
+// import Movies from "./Movies";
 
 function App() {
-/* 
-Reglas para manejar los hooks.
-1. Se debe  ejecutar en la cabecera o logica  del componente
-2. NO se puede cargar en condicionales ni ciclos
-cada vez que actualizo un estado se vuelve a renderizar el componente
-3. LOs estados se actualizan en la segunda carga
+  const [movies, setMovies] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
 
-*/
-
-/*SE ejecuta Siempre que se ejecuta un componente o hay un cambio de estado
-  useEffect(() => {
-  setText('desde el componente')
-  console.log('carga del componente')
-}) */
-
-//Se ejecuta cuando hay un cambio en alguna dependencia
-
-const [text, setText] = useState('')
-
-useEffect(() => {
-  setText('desde el componente')
-  console.log('carga del componente')
-})
+  const datos = (e) => {
+    e.preventDault; //evita que se recargue la pagina
+    //metodo de get
+    fetch(
+        `https://api.tvmaze.com/search/shows?q=${busqueda}`
+      ).then((response) => response.json());
+      
+      setMovies(response);
+    };
 
 
-  const searchRef = useRef(null)
  
-
-  const handleSubmit = (e)=>{
-    e.preventDefault()
-    console.log(searchRef.current.value)
-    setText('Desde un evento')
-  }
-
-  setText('desde el componente')
-  console.log(text);
+  const cambiarState = (e) => {
+    setBusqueda(e.target.value);
+    console.log(e.target.value);
+  };
 
   return (
     <section className="container">
-      <h4 className=" py-4 text-center">Buscardor de peliculas</h4>
-      <form onSubmit={handleSubmit}>
+      <h4 className=" py-4 text-center">Buscador de peliculas</h4>
+      <form className="form-input" onSubmit={datos}>
         <div className="input-group mb-3">
-          <input 
-                  ref={searchRef}
-                  type="search" 
-                  className="form-control" 
-                  placeholder="Buscar"
-                  name='buscador'
-                  />
-                  
-          
+          <input
+            onChange={cambiarState}
+            type="text"
+            className="form-control"
+            placeholder="Que serie desea buscar?"
+            name="buscador"
+          />
           <button className="btn btn-primary"> Buscar </button>
         </div>
       </form>
